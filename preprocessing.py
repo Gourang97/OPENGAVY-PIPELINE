@@ -10,6 +10,17 @@ class preprocessing():
         print ("1.\tConvert data type from object to float: object_to_float")
         print ("2.\tFill missing values with mean/median/mode/constant: impute_missing_values")
     
+    def open_string_to_categry(self, data):
+        df_all = data.copy()
+        for col_name in df_all.columns:
+            if df_all[col_name].dtypes == np.float64:
+                df_all[col_name] = df_all[col_name].fillna(df_all[col_name].mean())
+    
+            if df_all[col_name].dtypes != np.float64 and df_all[col_name].dtypes != np.int64:
+                df_all[col_name] = df_all[col_name].astype('category').cat.codes
+                df_all[col_name] = df_all[col_name].fillna('0')
+        return df_all
+
     def object_to_float(self, data):
         df = pd.DataFrame.copy(data)
         col_name_with_object_dtype = df.loc[: df.dtypes == 'object'].columns
@@ -159,7 +170,6 @@ class preprocessing():
         iv_cols = iv_cols['variable'].tolist()
 
         return df_iv_bins, iv_cols
-
 
     def woe_single(self, x, y, var):
 
